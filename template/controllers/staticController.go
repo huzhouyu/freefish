@@ -25,8 +25,8 @@ type data struct {
 //
 // 由于重写了该动作的路由为：static/{path:allString}  所以d.Path 即为请求url中出 static/ 后面的部分
 func (static *staticController) StaticFile(d *data) {
-	if b, err := ioutil.ReadFile(filepath.Join("static", d.Path)); err == nil {
-		static.Response.Write(b)
+	if f, err := os.Open(filepath.Join("static", d.Path)); err == nil {
+		io.Copy(static.Response,f)
 	} else {
 		static.Response.WriteHeader(404)
 		static.Response.Write([]byte(err.Error()))
